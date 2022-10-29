@@ -19,39 +19,37 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-sealed class MovieCategoryLabelTextViewState
-
-class MovieCategoryLabelTextViewStateDirect(val text: String): MovieCategoryLabelTextViewState()
-
-class MovieCategoryLabelTextViewStateReferenced(@StringRes val textRes: Int): MovieCategoryLabelTextViewState()
+sealed class MovieCategoryLabelTextViewState {
+    data class Text(val text: String) : MovieCategoryLabelTextViewState()
+    data class TextRes(@StringRes val textRes: Int) : MovieCategoryLabelTextViewState()
+}
 
 data class MovieCategoryLabelViewState(
     val itemId: Int,
     val isSelected: Boolean,
     val categoryText: MovieCategoryLabelTextViewState
 )
+
 @Composable
 fun MovieCategoryLabel(
     movieCategoryLabelViewState: MovieCategoryLabelViewState,
+    onItemClick: (MovieCategoryLabelViewState) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var isSelectedState by remember { mutableStateOf(movieCategoryLabelViewState.isSelected) }
     Column(modifier = modifier.width(IntrinsicSize.Min))
     {
-     Text(
-         text = when (movieCategoryLabelViewState.categoryText)
+        Text(
+            text = when (movieCategoryLabelViewState.categoryText) {
+                is MovieCategoryLabelTextViewState.Text -> movieCategoryLabelViewState.categoryText.text
+                is MovieCategoryLabelTextViewState.TextRes -> stringResource(id = movieCategoryLabelViewState.categoryText.textRes)
+            },
+            fontWeight = if (movieCategoryLabelViewState.isSelected) FontWeight.ExtraBold else FontWeight.Normal,
+            color = Gray600,
+            fontSize = 12.sp,
+            modifier = modifier.clickable { onItemClick(movieCategoryLabelViewState) }
 
-         {
-             is MovieCategoryLabelTextViewStateDirect -> movieCategoryLabelViewState.categoryText.text
-             is MovieCategoryLabelTextViewStateReferenced -> stringResource(id = movieCategoryLabelViewState.categoryText.textRes)
-         },
-         fontWeight = if(isSelectedState) FontWeight.ExtraBold else FontWeight.Normal,
-         color = Gray600,
-         fontSize = 12.sp,
-         modifier = modifier.clickable{isSelectedState = isSelectedState.not()}
-
-     )
-        if(isSelectedState){
+        )
+        if (movieCategoryLabelViewState.isSelected) {
             Divider(
                 color = Blue,
                 thickness = 3.dp,
@@ -63,12 +61,15 @@ fun MovieCategoryLabel(
 
 @Preview(showBackground = true)
 @Composable
-fun MovieCategoryLabelPreview(){
+fun MovieCategoryLabelPreview() {
+    var isSelected by remember { mutableStateOf(false) }
+
     MovieCategoryLabel(
         movieCategoryLabelViewState = MovieCategoryLabelViewState(
             itemId = 0,
-            isSelected = false,
-            categoryText = MovieCategoryLabelTextViewStateDirect(text="Movies")
-        )
+            isSelected = isSelected,
+            categoryText = MovieCategoryLabelTextViewState.Text(text = "Movies")
+        ),
+        onItemClick = { isSelected = true }
     )
 }

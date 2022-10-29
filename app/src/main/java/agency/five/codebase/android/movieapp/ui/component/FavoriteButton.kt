@@ -2,12 +2,14 @@ package agency.five.codebase.android.movieapp.ui.component
 
 import agency.five.codebase.android.movieapp.ui.theme.Blue
 import agency.five.codebase.android.movieapp.R
+import agency.five.codebase.android.movieapp.ui.theme.spacing
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -22,25 +24,26 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun FavoriteButton(
     isFavorite: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
 ) {
-    var isFavoriteState by remember { mutableStateOf(isFavorite)}
     Image(
-        painter = painterResource(id = if(isFavoriteState) R.drawable.filled_heart else R.drawable.empty_heart),
+        painter = painterResource(id = if(isFavorite) R.drawable.filled_heart else R.drawable.empty_heart),
                 contentDescription = null,
         modifier = modifier
-            .clickable {
-                isFavoriteState = isFavoriteState.not()
-            }
-            .size(30.dp)
+            .size(32.dp)
             .background(Blue, CircleShape)
             .clip(CircleShape)
-            .padding(4.dp)
+            .padding(MaterialTheme.spacing.extraSmall)
+            .padding(top = 4.dp)
+            .clickable{onClick()}
     )
 }
 @Preview(showBackground = true)
 @Composable
 public fun FavoriteButtonPreview() {
-    FavoriteButton(isFavorite = false)
+    var isFavorite by remember { mutableStateOf(true) }
+    FavoriteButton(isFavorite = isFavorite,
+        onClick = { isFavorite = !isFavorite })
 
 }
