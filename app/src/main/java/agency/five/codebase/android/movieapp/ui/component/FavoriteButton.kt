@@ -24,8 +24,8 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun FavoriteButton(
     isFavorite: Boolean,
-    modifier: Modifier = Modifier,
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Image(
         painter = painterResource(id = if(isFavorite) R.drawable.filled_heart else R.drawable.empty_heart),

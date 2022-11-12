@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
@@ -32,20 +33,19 @@ fun MovieCard(
     movieCardViewState: MovieCardViewState,
     onCardClick: () -> Unit,
     onLikeButtonClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier.size(130.dp, 200.dp)
 ) {
     Card(
-        shape = RoundedCornerShape(percent = 10),
+        shape = RoundedCornerShape(CornerSize(10.dp)),
         elevation = 10.dp,
         onClick = onCardClick,
-        modifier = modifier
+        modifier = Modifier
     ) {
-        Box(modifier = Modifier) {
+        Box() {
             AsyncImage(
                 model = movieCardViewState.imageUrl,
                 contentDescription = movieCardViewState.imageUrl,
                 modifier
-                    .size(130.dp, 200.dp)
                     .fillMaxSize(),
                 contentScale = ContentScale.Crop
 
@@ -54,9 +54,8 @@ fun MovieCard(
             FavoriteButton(
                 isFavorite = movieCardViewState.isFavorite,
                 onClick = onLikeButtonClick,
-                modifier = modifier
+                Modifier
                     .padding(start = 5.dp, top = 5.dp)
-                    .clickable{onLikeButtonClick()}
             )
         }
     }

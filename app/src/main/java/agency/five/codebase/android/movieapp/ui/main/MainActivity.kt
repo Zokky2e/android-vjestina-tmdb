@@ -1,5 +1,6 @@
 package agency.five.codebase.android.movieapp.ui.main
 
+import agency.five.codebase.android.movieapp.ui.component.ActorCardPreview
 import agency.five.codebase.android.movieapp.ui.theme.MovieAppTheme
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -22,7 +23,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    Greeting("Android")
+                    ActorCardPreview();
                 }
             }
         }

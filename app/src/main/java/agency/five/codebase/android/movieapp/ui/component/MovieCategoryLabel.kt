@@ -36,7 +36,7 @@ fun MovieCategoryLabel(
     onItemClick: (MovieCategoryLabelViewState) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier = modifier.width(IntrinsicSize.Min))
+    Column(modifier = modifier.width(IntrinsicSize.Min).clickable { onItemClick(movieCategoryLabelViewState) })
     {
         Text(
             text = when (movieCategoryLabelViewState.categoryText) {
@@ -45,8 +45,7 @@ fun MovieCategoryLabel(
             },
             fontWeight = if (movieCategoryLabelViewState.isSelected) FontWeight.ExtraBold else FontWeight.Normal,
             color = Gray600,
-            fontSize = 12.sp,
-            modifier = modifier.clickable { onItemClick(movieCategoryLabelViewState) }
+            fontSize = 12.sp
 
         )
         if (movieCategoryLabelViewState.isSelected) {
