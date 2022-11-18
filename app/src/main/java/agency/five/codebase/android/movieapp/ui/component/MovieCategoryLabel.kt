@@ -9,8 +9,10 @@ import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Divider
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.runtime.internal.isLiveLiteralsEnabled
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -26,17 +28,19 @@ sealed class MovieCategoryLabelTextViewState {
 
 data class MovieCategoryLabelViewState(
     val itemId: Int,
-    val isSelected: Boolean,
+    var isSelected: Boolean,
     val categoryText: MovieCategoryLabelTextViewState
 )
 
 @Composable
 fun MovieCategoryLabel(
     movieCategoryLabelViewState: MovieCategoryLabelViewState,
-    onItemClick: (MovieCategoryLabelViewState) -> Unit,
+    onItemClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier = modifier.width(IntrinsicSize.Min).clickable { onItemClick(movieCategoryLabelViewState) })
+    Column(modifier = modifier
+        .width(IntrinsicSize.Max)
+        .clickable { onItemClick() })
     {
         Text(
             text = when (movieCategoryLabelViewState.categoryText) {
@@ -44,15 +48,16 @@ fun MovieCategoryLabel(
                 is MovieCategoryLabelTextViewState.TextRes -> stringResource(id = movieCategoryLabelViewState.categoryText.textRes)
             },
             fontWeight = if (movieCategoryLabelViewState.isSelected) FontWeight.ExtraBold else FontWeight.Normal,
-            color = Gray600,
-            fontSize = 12.sp
+            color = if (movieCategoryLabelViewState.isSelected) MaterialTheme.colors.secondaryVariant else Gray600,
+            fontSize = 16.sp,
+            modifier = Modifier
 
         )
         if (movieCategoryLabelViewState.isSelected) {
             Divider(
-                color = Blue,
+                color = MaterialTheme.colors.secondaryVariant,
                 thickness = 3.dp,
-                modifier = modifier.padding(top = 3.dp)
+                modifier = Modifier.padding(top = 3.dp)
             )
         }
     }

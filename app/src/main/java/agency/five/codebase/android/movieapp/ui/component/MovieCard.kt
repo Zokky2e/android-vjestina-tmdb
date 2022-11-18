@@ -1,5 +1,6 @@
 package agency.five.codebase.android.movieapp.ui.component
 
+import agency.five.codebase.android.movieapp.ui.theme.LocalSpacing
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,8 +24,9 @@ import coil.request.ImageRequest
 
 
 data class MovieCardViewState(
-    val imageUrl: String,
-    val isFavorite: Boolean
+    val id: Int,
+    var isFavorite: Boolean,
+    val imageUrl: String?,
 )
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -39,13 +41,13 @@ fun MovieCard(
         shape = RoundedCornerShape(CornerSize(10.dp)),
         elevation = 10.dp,
         onClick = onCardClick,
-        modifier = Modifier
+        modifier = modifier
     ) {
-        Box() {
+        Box(modifier = Modifier) {
             AsyncImage(
                 model = movieCardViewState.imageUrl,
                 contentDescription = movieCardViewState.imageUrl,
-                modifier
+                modifier = Modifier
                     .fillMaxSize(),
                 contentScale = ContentScale.Crop
 
@@ -54,9 +56,11 @@ fun MovieCard(
             FavoriteButton(
                 isFavorite = movieCardViewState.isFavorite,
                 onClick = onLikeButtonClick,
-                Modifier
+                modifier = Modifier
                     .padding(start = 5.dp, top = 5.dp)
             )
+
+
         }
     }
 }
@@ -68,8 +72,9 @@ public fun MovieCardPreview() {
     var onLikeButtonClick by remember { mutableStateOf(true) }
     MovieCard(
         movieCardViewState = MovieCardViewState(
+            id = 1,
+            isFavorite = onLikeButtonClick,
             imageUrl = "https://www.filmizlesene.pro/wp-content/uploads/2010/03/1159.jpg",
-            isFavorite = onLikeButtonClick
         ),
         onCardClick = { onCardClick = !onCardClick },
         onLikeButtonClick = { onLikeButtonClick = !onLikeButtonClick },

@@ -14,4 +14,4 @@ val Gray700 = Color(0xFF818181)
 val Gray900 = Color(0xFF212121)
 
 val LimeGreen = Color(0, 255, 0)
-val LightGreen = Color(red=212, green =255,blue=212)
+val LightGreen = Color(red = 50, green = 56, blue = 50, alpha = 94)
