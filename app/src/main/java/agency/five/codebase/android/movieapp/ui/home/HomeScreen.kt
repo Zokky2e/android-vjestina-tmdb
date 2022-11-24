@@ -20,12 +20,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import java.util.Collections.copy
-import kotlin.math.log
 
 private val homeScreenMapper: HomeScreenMapper = HomeScreenMapperImpl()
 
-// multiple view states if required
 val popularCategoryViewState = homeScreenMapper.toHomeMovieCategoryViewState(
     listOf(
         MovieCategory.POPULAR_STREAMING,
@@ -57,43 +54,52 @@ val upcomingCategoryViewState = homeScreenMapper.toHomeMovieCategoryViewState(
 fun HomeRoute(
     onNavigateToMovieDetails: (Int) -> Unit
 ) {
-    var p by remember { mutableStateOf(popularCategoryViewState) }
-    var n by remember { mutableStateOf(nowPlayingCategoryViewState) }
-    var u by remember { mutableStateOf(upcomingCategoryViewState) }
-// ...
+    var popularCategoryViewState by remember { mutableStateOf(popularCategoryViewState) }
+    var nowPlayingCategoryViewState by remember { mutableStateOf(nowPlayingCategoryViewState) }
+    var upcomingCategoryViewState by remember { mutableStateOf(upcomingCategoryViewState) }
     HomeScreen(
-        p, n, u,
+        popularCategoryViewState, nowPlayingCategoryViewState, upcomingCategoryViewState,
         onCategoryClick = { category ->
             when (category.itemId) {
-                in 0..3 -> {
-                    p =
-                        changeCategory(p, category.itemId)
+                MovieCategory.POPULAR_STREAMING.ordinal,
+                MovieCategory.POPULAR_RENT.ordinal,
+                MovieCategory.POPULAR_ONTV.ordinal,
+                MovieCategory.POPULAR_THEATERS.ordinal
+                -> {
+                    popularCategoryViewState =
+                        changeCategory(popularCategoryViewState, category.itemId)
                 }
-                in 4..5 -> {
-                    n =
-                        changeCategory(u, category.itemId)
+                MovieCategory.PLAYING_MOVIES.ordinal,
+                MovieCategory.PLAYING_TV.ordinal -> {
+                    nowPlayingCategoryViewState =
+                        changeCategory(nowPlayingCategoryViewState, category.itemId)
                 }
-                else -> {
-                    u =
-                        changeCategory(u, category.itemId)
+                MovieCategory.UPCOMING_TODAY.ordinal,
+                MovieCategory.UPCOMING_WEEK.ordinal -> {
+                    upcomingCategoryViewState =
+                        changeCategory(upcomingCategoryViewState, category.itemId)
                 }
             }
         },
         onNavigateToMovieDetails,
         onFavoriteClick = { category, movie ->
             when (category.itemId) {
-
-                in 0..3 -> {
-                    p =
-                        changeMovieFavoriteStatus(p, movie)
+                MovieCategory.POPULAR_STREAMING.ordinal,
+                MovieCategory.POPULAR_RENT.ordinal,
+                MovieCategory.POPULAR_ONTV.ordinal,
+                MovieCategory.POPULAR_THEATERS.ordinal -> {
+                    popularCategoryViewState =
+                        changeMovieFavoriteStatus(popularCategoryViewState, movie)
                 }
-                in 4..5 -> {
-                    n =
-                        changeMovieFavoriteStatus(n, movie)
+                MovieCategory.PLAYING_MOVIES.ordinal,
+                MovieCategory.PLAYING_TV.ordinal -> {
+                    nowPlayingCategoryViewState =
+                        changeMovieFavoriteStatus(nowPlayingCategoryViewState, movie)
                 }
-                else -> {
-                    u =
-                        changeMovieFavoriteStatus(u, movie)
+                MovieCategory.UPCOMING_TODAY.ordinal,
+                MovieCategory.UPCOMING_WEEK.ordinal -> {
+                    upcomingCategoryViewState =
+                        changeMovieFavoriteStatus(upcomingCategoryViewState, movie)
                 }
             }
         }
@@ -101,7 +107,7 @@ fun HomeRoute(
 }
 
 @Composable
-fun MovieCategorySection(
+private fun MovieCategorySection(
     categoryViewState: HomeMovieCategoryViewState,
     title: String,
     onCategoryClick: (MovieCategoryLabelViewState) -> Unit,
@@ -276,7 +282,7 @@ fun HomeScreenPreview() {
     }
 }
 
-fun changeMovieFavoriteStatus(
+private fun changeMovieFavoriteStatus(
     homeMovieCategoryViewState: HomeMovieCategoryViewState,
     movie: MovieCardViewState
 ): HomeMovieCategoryViewState {
@@ -286,7 +292,7 @@ fun changeMovieFavoriteStatus(
     return homeMovieCategoryViewState.copy(movies = movies)
 }
 
-fun changeCategory(
+private fun changeCategory(
     state: HomeMovieCategoryViewState,
     itemId: Int
 ): HomeMovieCategoryViewState {

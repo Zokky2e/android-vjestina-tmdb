@@ -3,21 +3,13 @@ package agency.five.codebase.android.movieapp.ui.moviedetails
 import agency.five.codebase.android.movieapp.R
 import agency.five.codebase.android.movieapp.mock.MoviesMock
 import agency.five.codebase.android.movieapp.ui.component.*
-import agency.five.codebase.android.movieapp.ui.favorites.FavoritesViewState
-import agency.five.codebase.android.movieapp.ui.favorites.mapper.FavoritesMapper
-import agency.five.codebase.android.movieapp.ui.favorites.mapper.FavoritesMapperImpl
 import agency.five.codebase.android.movieapp.ui.moviedetails.mapper.MovieDetailsMapper
 import agency.five.codebase.android.movieapp.ui.moviedetails.mapper.MovieDetailsMapperImpl
 import agency.five.codebase.android.movieapp.ui.theme.LocalSpacing
 import agency.five.codebase.android.movieapp.ui.theme.MovieAppTheme
-import android.widget.GridLayout
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -32,31 +24,26 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import kotlin.math.ceil
 
-class MovieDetailsScreen {
-}
-
 private val movieDetailsMapper: MovieDetailsMapper = MovieDetailsMapperImpl()
 
-// multiple view states if required
 var movieDetailsViewState = movieDetailsMapper.toMovieDetailsViewState(MoviesMock.getMovieDetails())
 
 @Composable
 fun MovieDetailsRoute(
-// actions
 ) {
-    var m by remember { mutableStateOf(movieDetailsViewState) }
+    var movieDetailsViewState by remember { mutableStateOf(movieDetailsViewState) }
     MovieDetailsScreen(
-        m,
+        movieDetailsViewState,
         {
-            m =
-                m.copy(isFavorite = !m.isFavorite)
+            movieDetailsViewState =
+                movieDetailsViewState.copy(isFavorite = !movieDetailsViewState.isFavorite)
         },
 
-    )
+        )
 }
 
 @Composable
-fun MovieTitleCard(
+private fun MovieTitleCard(
     title: String,
     imageUrl: String?,
     voteAverage: Float,
@@ -108,7 +95,7 @@ fun MovieTitleCard(
 }
 
 @Composable
-fun MovieOverviewSection(
+private fun MovieOverviewSection(
     text: String,
     modifier: Modifier = Modifier
 ) {
@@ -128,7 +115,7 @@ fun MovieOverviewSection(
 }
 
 @Composable
-fun MovieCrewSection(
+private fun MovieCrewSection(
     crew: List<CrewItemViewState>,
     modifier: Modifier = Modifier
 ) {
@@ -158,7 +145,7 @@ fun MovieCrewSection(
 }
 
 @Composable
-fun MovieCastSection(
+private fun MovieCastSection(
     cast: List<ActorCardViewState>,
     modifier: Modifier = Modifier
 ) {
@@ -224,7 +211,6 @@ fun MovieDetailsScreen(
             )
         }
     }
-
 }
 
 @Preview

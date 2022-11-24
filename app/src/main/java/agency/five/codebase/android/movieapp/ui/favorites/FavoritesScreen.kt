@@ -20,22 +20,20 @@ import androidx.compose.ui.unit.sp
 
 private val favoritesMapper: FavoritesMapper = FavoritesMapperImpl()
 
-// multiple view states if required
 var favoritesViewState = favoritesMapper.toFavoritesViewState(MoviesMock.getMoviesList())
 
 @Composable
 fun FavoritesRoute(
     onNavigateToMovieDetails: (Int) -> Unit
 ) {
-    var f by remember { mutableStateOf(favoritesViewState) }
-// ...
+    var favoritesViewState by remember { mutableStateOf(favoritesViewState) }
     FavoritesScreen(
-        f,
+        favoritesViewState,
         onNavigateToMovieDetails,
         { favoritesMovieViewState ->
-            f = changeMovieFavoriteStatus(f, favoritesMovieViewState)
+            favoritesViewState =
+                changeMovieFavoriteStatus(favoritesViewState, favoritesMovieViewState)
         },
-// other states and actions
     )
 }
 
@@ -102,7 +100,7 @@ fun FavoritesScreenPreview() {
     }
 }
 
-fun changeMovieFavoriteStatus(
+private fun changeMovieFavoriteStatus(
     favoritesViewState: FavoritesViewState,
     movie: MovieCardViewState
 ): FavoritesViewState {

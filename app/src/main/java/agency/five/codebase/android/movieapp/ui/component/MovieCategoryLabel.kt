@@ -1,6 +1,5 @@
 package agency.five.codebase.android.movieapp.ui.component
 
-import agency.five.codebase.android.movieapp.ui.theme.Blue
 import agency.five.codebase.android.movieapp.ui.theme.Gray600
 import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
@@ -12,7 +11,6 @@ import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
-import androidx.compose.runtime.internal.isLiveLiteralsEnabled
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -28,7 +26,7 @@ sealed class MovieCategoryLabelTextViewState {
 
 data class MovieCategoryLabelViewState(
     val itemId: Int,
-    var isSelected: Boolean,
+    val isSelected: Boolean,
     val categoryText: MovieCategoryLabelTextViewState
 )
 

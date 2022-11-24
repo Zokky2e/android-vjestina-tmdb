@@ -4,6 +4,7 @@ import agency.five.codebase.android.movieapp.navigation.NavigationItem
 import agency.five.codebase.android.movieapp.ui.theme.LocalSpacing
 import agency.five.codebase.android.movieapp.R
 import agency.five.codebase.android.movieapp.navigation.MOVIE_ID_KEY
+import agency.five.codebase.android.movieapp.navigation.MovieDetailsDestination
 import agency.five.codebase.android.movieapp.ui.favorites.FavoritesRoute
 import agency.five.codebase.android.movieapp.ui.home.HomeRoute
 import agency.five.codebase.android.movieapp.ui.moviedetails.MovieDetailsRoute
@@ -32,12 +33,11 @@ import androidx.navigation.navArgument
 fun MainScreen() {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-    var showBottomBar by remember {
-        mutableStateOf(true)
+    val showBottomBar = when (navBackStackEntry?.destination?.route) {
+        MovieDetailsDestination.route -> false
+        else -> true
     }
-    var showBackIcon by remember {
-        mutableStateOf(!showBottomBar)
-    }
+    val showBackIcon = !showBottomBar
     Scaffold(
         topBar = {
             TopBar(
@@ -81,33 +81,27 @@ fun MainScreen() {
                 modifier = Modifier.padding(padding)
             ) {
                 composable(NavigationItem.HomeDestination.route) {
-                    showBottomBar = true
-                    showBackIcon = false
                     HomeRoute(
                         onNavigateToMovieDetails = { id ->
                             navController.navigate(
-                                NavigationItem.MovieDetailsDestination.createNavigationRoute(id)
+                                MovieDetailsDestination.createNavigationRoute(id)
                             )
                         }
                     )
                 }
                 composable(NavigationItem.FavoritesDestination.route) {
-                    showBottomBar = true
-                    showBackIcon = false
                     FavoritesRoute(
                         onNavigateToMovieDetails = { id ->
                             navController.navigate(
-                                NavigationItem.MovieDetailsDestination.createNavigationRoute(id)
+                                MovieDetailsDestination.createNavigationRoute(id)
                             )
                         },
                     )
                 }
                 composable(
-                    route = NavigationItem.MovieDetailsDestination.route,
+                    route = MovieDetailsDestination.route,
                     arguments = listOf(navArgument(MOVIE_ID_KEY) { type = NavType.IntType }),
                 ) {
-                    showBackIcon = true
-                    showBottomBar = false
                     MovieDetailsRoute()
                 }
             }
@@ -165,7 +159,8 @@ private fun BottomNavigationBar(
             destinations.forEach { destination ->
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     if (currentDestination != null) {
-                        Image(painter = painterResource(id = if (currentDestination.route == destination.route) destination.selectedIconId else destination.unselectedIconId),
+                        Image(
+                            painter = painterResource(id = if (currentDestination.route == destination.route) destination.selectedIconId else destination.unselectedIconId),
                             contentDescription = null,
                             modifier = Modifier
                                 .clickable {
