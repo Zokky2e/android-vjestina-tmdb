@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">MovieApp</string>
+    <string name="popular_streaming">Streaming</string>
+    <string name="popular_ontv">On TV</string>
+    <string name="popular_rent">For Rent</string>
+    <string name="popular_theatres">In Theatres</string>
+    <string name="playing_movies">Movies</string>
+    <string name="playing_tv">TV</string>
+    <string name="upcoming_today">Today</string>
+    <string name="upcoming_week">This Week</string>
+    <string name="favorites">Favorites</string>
+    <string name="home">Home</string>
+    <string name="user_score">User Score</string>
+
 </resources>

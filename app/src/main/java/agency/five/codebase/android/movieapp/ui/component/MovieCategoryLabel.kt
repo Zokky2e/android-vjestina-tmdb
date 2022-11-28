@@ -1,6 +1,5 @@
 package agency.five.codebase.android.movieapp.ui.component
 
-import agency.five.codebase.android.movieapp.ui.theme.Blue
 import agency.five.codebase.android.movieapp.ui.theme.Gray600
 import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
@@ -9,6 +8,7 @@ import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Divider
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.mutableStateOf
@@ -33,10 +33,12 @@ data class MovieCategoryLabelViewState(
 @Composable
 fun MovieCategoryLabel(
     movieCategoryLabelViewState: MovieCategoryLabelViewState,
-    onItemClick: (MovieCategoryLabelViewState) -> Unit,
+    onItemClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier = modifier.width(IntrinsicSize.Min).clickable { onItemClick(movieCategoryLabelViewState) })
+    Column(modifier = modifier
+        .width(IntrinsicSize.Max)
+        .clickable { onItemClick() })
     {
         Text(
             text = when (movieCategoryLabelViewState.categoryText) {
@@ -44,15 +46,16 @@ fun MovieCategoryLabel(
                 is MovieCategoryLabelTextViewState.TextRes -> stringResource(id = movieCategoryLabelViewState.categoryText.textRes)
             },
             fontWeight = if (movieCategoryLabelViewState.isSelected) FontWeight.ExtraBold else FontWeight.Normal,
-            color = Gray600,
-            fontSize = 12.sp
+            color = if (movieCategoryLabelViewState.isSelected) MaterialTheme.colors.secondaryVariant else Gray600,
+            fontSize = 16.sp,
+            modifier = Modifier
 
         )
         if (movieCategoryLabelViewState.isSelected) {
             Divider(
-                color = Blue,
+                color = MaterialTheme.colors.secondaryVariant,
                 thickness = 3.dp,
-                modifier = modifier.padding(top = 3.dp)
+                modifier = Modifier.padding(top = 3.dp)
             )
         }
     }

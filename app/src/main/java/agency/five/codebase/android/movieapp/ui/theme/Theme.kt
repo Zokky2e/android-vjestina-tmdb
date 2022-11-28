@@ -13,6 +13,7 @@ private val DarkColorPalette = darkColors(
     background = Gray900,
     onPrimary = Color.White,
     onBackground = Color.White,
+    secondaryVariant = Color.White,
     surface = Gray700,
     onSurface = Color.White
 )
@@ -23,6 +24,7 @@ private val LightColorPalette = lightColors(
     background = Gray100,
     onPrimary = Color.White,
     onBackground = Color.Black,
+    secondaryVariant = Blue,
     surface = Gray300,
     onSurface = Color.Black
 )
