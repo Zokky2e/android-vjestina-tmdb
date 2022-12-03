@@ -23,31 +23,17 @@ fun HomeRoute(
     onNavigateToMovieDetails: (Int) -> Unit
 ) {
     val popularCategoryViewState: HomeMovieCategoryViewState by homeViewModel.popularCategoryViewState.collectAsState()
-    val nowPlayingCategoryViewState:  HomeMovieCategoryViewState by homeViewModel.nowPlayingCategoryViewState.collectAsState()
-    val upcomingCategoryViewState :HomeMovieCategoryViewState by homeViewModel.upcomingCategoryViewState.collectAsState()
+    val nowPlayingCategoryViewState: HomeMovieCategoryViewState by homeViewModel.nowPlayingCategoryViewState.collectAsState()
+    val upcomingCategoryViewState: HomeMovieCategoryViewState by homeViewModel.upcomingCategoryViewState.collectAsState()
     HomeScreen(
         popularCategoryViewState, nowPlayingCategoryViewState, upcomingCategoryViewState,
         onCategoryClick = { category ->
             homeViewModel.changeCategory(category.itemId)
         },
         onNavigateToMovieDetails,
-        onFavoriteClick = { category, movie ->
-            when (category.itemId) {
-                MovieCategory.POPULAR_STREAMING.ordinal,
-                MovieCategory.POPULAR_RENT.ordinal,
-                MovieCategory.POPULAR_ONTV.ordinal,
-                MovieCategory.POPULAR_THEATERS.ordinal -> {
-                    homeViewModel.toggleFavorite(movie.id)
-                }
-                MovieCategory.PLAYING_MOVIES.ordinal,
-                MovieCategory.PLAYING_TV.ordinal -> {
-                        homeViewModel.toggleFavorite(movie.id)
-                }
-                MovieCategory.UPCOMING_TODAY.ordinal,
-                MovieCategory.UPCOMING_WEEK.ordinal -> {
-                        homeViewModel.toggleFavorite(movie.id)
-                }
-            }
+        onFavoriteClick = { movie ->
+            homeViewModel.toggleFavorite(movie.id)
+
         }
     )
 }
@@ -58,7 +44,7 @@ private fun MovieCategorySection(
     title: String,
     onCategoryClick: (MovieCategoryLabelViewState) -> Unit,
     onNavigateToMovieDetails: (Int) -> Unit,
-    onFavoriteClick: (MovieCategoryLabelViewState, MovieCardViewState) -> Unit,
+    onFavoriteClick: (MovieCardViewState) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -96,7 +82,6 @@ private fun MovieCategorySection(
                     onCardClick = { onNavigateToMovieDetails(categoryViewState.movies[it].id) },
                     onLikeButtonClick = {
                         onFavoriteClick(
-                            categoryViewState.movieCategories[it],
                             categoryViewState.movies[it]
                         )
                     })
@@ -112,7 +97,7 @@ fun HomeScreen(
     upcomingCategoryViewState: HomeMovieCategoryViewState,
     onCategoryClick: (MovieCategoryLabelViewState) -> Unit,
     onNavigateToMovieDetails: (Int) -> Unit,
-    onFavoriteClick: (MovieCategoryLabelViewState, MovieCardViewState) -> Unit,
+    onFavoriteClick: (MovieCardViewState) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(

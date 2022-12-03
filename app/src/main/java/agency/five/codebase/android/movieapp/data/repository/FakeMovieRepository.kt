@@ -5,8 +5,11 @@ import agency.five.codebase.android.movieapp.mock.MoviesMock
 import agency.five.codebase.android.movieapp.model.Movie
 import agency.five.codebase.android.movieapp.model.MovieCategory
 import agency.five.codebase.android.movieapp.model.MovieDetails
+import androidx.coordinatorlayout.widget.CoordinatorLayout.DispatchChangeEvent
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.withContext
 
 class FakeMovieRepository(
     private val ioDispatcher: CoroutineDispatcher,
@@ -15,10 +18,7 @@ class FakeMovieRepository(
     private val movies: Flow<List<Movie>> = FavoritesDBMock.favoriteIds
         .mapLatest { favoriteIds ->
             fakeMovies.map { movie ->
-                if (favoriteIds.contains(movie.id))
-                    movie.copy(isFavorite = true)
-                else
-                    movie.copy(isFavorite = false)
+                movie.copy(isFavorite = favoriteIds.contains(movie.id))
             }
         }
         .flowOn(ioDispatcher)
@@ -30,33 +30,29 @@ class FakeMovieRepository(
         FavoritesDBMock.favoriteIds
             .mapLatest { favoriteIds ->
                 val movieDetails = MoviesMock.getMovieDetails(movieId)
-                val tempMovie = movieDetails.movie
-                tempMovie.copy(isFavorite = checkFavorite(favoriteIds, tempMovie.id))
+                val tempMovie =
+                    movieDetails.movie.copy(isFavorite = favoriteIds.contains(movieId))
                 movieDetails.copy(movie = tempMovie)
             }
             .flowOn(ioDispatcher)
-
-    private fun checkFavorite(favoriteIds: Set<Int>, id: Int): Boolean {
-        favoriteIds.map {
-            if (it == id)
-                return true
-        }
-        return false
-    }
 
     override fun favoriteMovies(): Flow<List<Movie>> = movies.mapLatest {
         it.filter { fakeMovie -> fakeMovie.isFavorite }
     }
 
-    override fun addMovieToFavorites(movieId: Int) {
-        FavoritesDBMock.insert(movieId)
+    override suspend fun addMovieToFavorites(movieId: Int) {
+        return withContext(Dispatchers.IO){
+            FavoritesDBMock.insert(movieId)
+        }
     }
 
-    override fun removeMovieFromFavorites(movieId: Int) {
+    override suspend fun removeMovieFromFavorites(movieId: Int) {
+        return withContext(Dispatchers.IO){
         FavoritesDBMock.delete(movieId)
+        }
     }
 
-    override fun toggleFavorite(movieId: Int) =
+    override suspend fun toggleFavorite(movieId: Int) =
         if (FavoritesDBMock.favoriteIds.value.contains(movieId)) {
             removeMovieFromFavorites(movieId)
         } else {

@@ -32,11 +32,16 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import org.koin.androidx.compose.get
+import org.koin.androidx.compose.getViewModel
+import org.koin.androidx.compose.inject
+import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 
 @Composable
 fun MainScreen() {
     val navController = rememberNavController()
+    var currentMovieId = 1
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val showBottomBar = when (navBackStackEntry?.destination?.route) {
         MovieDetailsDestination.route -> false
@@ -86,7 +91,7 @@ fun MainScreen() {
                 modifier = Modifier.padding(padding)
             ) {
                 composable(NavigationItem.HomeDestination.route) {
-                    val homeViewModel : HomeViewModel = get()
+                    val homeViewModel: HomeViewModel = get()
                     HomeRoute(
                         homeViewModel,
                         onNavigateToMovieDetails = { id ->
@@ -97,13 +102,14 @@ fun MainScreen() {
                     )
                 }
                 composable(NavigationItem.FavoritesDestination.route) {
-                    val favoritesViewModel : FavoritesViewModel = get()
+                    val favoritesViewModel: FavoritesViewModel = get()
                     FavoritesRoute(
                         favoritesViewModel,
                         onNavigateToMovieDetails = { id ->
                             navController.navigate(
                                 MovieDetailsDestination.createNavigationRoute(id)
                             )
+                            currentMovieId = id
                         },
                     )
                 }
@@ -111,7 +117,9 @@ fun MainScreen() {
                     route = MovieDetailsDestination.route,
                     arguments = listOf(navArgument(MOVIE_ID_KEY) { type = NavType.IntType }),
                 ) {
-                    val movieDetailsViewModel : MovieDetailsViewModel = get()
+                    val movieDetailsViewModel: MovieDetailsViewModel = getViewModel(
+                        parameters = { parametersOf(currentMovieId) }
+                    )
                     MovieDetailsRoute(movieDetailsViewModel)
                 }
             }

@@ -24,7 +24,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 fun MovieDetailsRoute(
     movieDetailsViewModel: MovieDetailsViewModel = viewModel()
 ) {
-    val movieDetailsViewState: MovieDetailsViewState by movieDetailsViewModel.movieDetailsViewState.collectAsState()
+    val movieDetailsViewState:
+            MovieDetailsViewState by
+    movieDetailsViewModel.movieDetailsViewState.collectAsState()
     MovieDetailsScreen(
         movieDetailsViewState,
         {

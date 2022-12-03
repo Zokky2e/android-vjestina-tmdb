@@ -82,7 +82,9 @@ class HomeViewModel(
     }
 
     fun toggleFavorite(movieId: Int) {
-        movieRepository.toggleFavorite(movieId)
+        viewModelScope.launch {
+            movieRepository.toggleFavorite(movieId)
+        }
     }
 
     fun changeCategory(
