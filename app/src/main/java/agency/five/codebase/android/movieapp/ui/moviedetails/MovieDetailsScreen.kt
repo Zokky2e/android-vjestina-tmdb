@@ -1,12 +1,8 @@
 package agency.five.codebase.android.movieapp.ui.moviedetails
 
 import agency.five.codebase.android.movieapp.R
-import agency.five.codebase.android.movieapp.mock.MoviesMock
 import agency.five.codebase.android.movieapp.ui.component.*
-import agency.five.codebase.android.movieapp.ui.moviedetails.mapper.MovieDetailsMapper
-import agency.five.codebase.android.movieapp.ui.moviedetails.mapper.MovieDetailsMapperImpl
 import agency.five.codebase.android.movieapp.ui.theme.LocalSpacing
-import agency.five.codebase.android.movieapp.ui.theme.MovieAppTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -18,28 +14,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import kotlin.math.ceil
-
-private val movieDetailsMapper: MovieDetailsMapper = MovieDetailsMapperImpl()
-
-var movieDetailsViewState = movieDetailsMapper.toMovieDetailsViewState(MoviesMock.getMovieDetails())
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
 fun MovieDetailsRoute(
+    movieDetailsViewModel: MovieDetailsViewModel = viewModel()
 ) {
-    var movieDetailsViewState by remember { mutableStateOf(movieDetailsViewState) }
+    val movieDetailsViewState:
+            MovieDetailsViewState by
+    movieDetailsViewModel.movieDetailsViewState.collectAsState()
     MovieDetailsScreen(
         movieDetailsViewState,
         {
-            movieDetailsViewState =
-                movieDetailsViewState.copy(isFavorite = !movieDetailsViewState.isFavorite)
+            movieDetailsViewModel.toggleFavorite(movieDetailsViewState.id)
         },
-
-        )
+    )
 }
 
 @Composable
@@ -210,17 +203,5 @@ fun MovieDetailsScreen(
                 cast = movie.cast
             )
         }
-    }
-}
-
-@Preview
-@Composable
-fun MovieDetailsScreenPreview() {
-    val movieDetailsViewState =
-        movieDetailsMapper.toMovieDetailsViewState(MoviesMock.getMovieDetails())
-    MovieAppTheme {
-        MovieDetailsScreen(
-            movieDetailsViewState, {}
-        )
     }
 }
