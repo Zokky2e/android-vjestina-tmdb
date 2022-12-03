@@ -41,7 +41,6 @@ import org.koin.core.parameter.parametersOf
 @Composable
 fun MainScreen() {
     val navController = rememberNavController()
-    var currentMovieId = 1
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val showBottomBar = when (navBackStackEntry?.destination?.route) {
         MovieDetailsDestination.route -> false
@@ -109,7 +108,7 @@ fun MainScreen() {
                             navController.navigate(
                                 MovieDetailsDestination.createNavigationRoute(id)
                             )
-                            currentMovieId = id
+
                         },
                     )
                 }
@@ -118,7 +117,7 @@ fun MainScreen() {
                     arguments = listOf(navArgument(MOVIE_ID_KEY) { type = NavType.IntType }),
                 ) {
                     val movieDetailsViewModel: MovieDetailsViewModel = getViewModel(
-                        parameters = { parametersOf(currentMovieId) }
+                        parameters = { parametersOf(it.arguments?.getInt(MOVIE_ID_KEY)) }
                     )
                     MovieDetailsRoute(movieDetailsViewModel)
                 }
